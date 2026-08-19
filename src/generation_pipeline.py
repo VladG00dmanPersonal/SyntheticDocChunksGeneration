@@ -27,6 +27,8 @@ def generate_json(
         max_tokens=max_tokens,
         response_format={"type": "json_object"},
         extra_body={"thinking": {"type": "disabled"}},
+        # reasoning_effort="high",
+        # extra_body={"thinking": {"type": "enabled"}},
     )
     # print(response)
     return json.loads(response.choices[0].message.content)
