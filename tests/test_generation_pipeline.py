@@ -1,4 +1,6 @@
 import json
+from contextlib import redirect_stdout
+from io import StringIO
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from types import SimpleNamespace
@@ -20,6 +22,19 @@ class FakeCompletions:
             )
         )
         return SimpleNamespace(choices=[choice])
+
+
+class FlakyCompletions(FakeCompletions):
+    def __init__(self, payload, failures):
+        super().__init__(payload)
+        self.failures = failures
+        self.attempts = 0
+
+    def create(self, **kwargs):
+        self.attempts += 1
+        if self.attempts <= self.failures:
+            raise RuntimeError(f"temporary failure {self.attempts}")
+        return super().create(**kwargs)
 
 
 class GenerationPipelineTests(unittest.TestCase):
@@ -50,6 +65,52 @@ class GenerationPipelineTests(unittest.TestCase):
             completions.request["extra_body"],
             {"thinking": {"type": "disabled"}},
         )
+
+    def test_generate_json_retries_until_success_and_logs_errors(self):
+        payload = {"document_title": "Устав фонда «Маяк»"}
+        completions = FlakyCompletions(payload, failures=2)
+        client = SimpleNamespace(chat=SimpleNamespace(completions=completions))
+        output = StringIO()
+
+        with redirect_stdout(output):
+            result = pipeline.generate_json(
+                client,
+                "system prompt",
+                "user prompt",
+                model="deepseek-v4-pro",
+                regeneration_attempts=3,
+                log_context="intrachunk_cohesion pair 2/10",
+            )
+
+        self.assertEqual(result, payload)
+        self.assertEqual(completions.attempts, 3)
+        self.assertIn(
+            "Error generating JSON for intrachunk_cohesion pair 2/10: "
+            "RuntimeError: temporary failure 1",
+            output.getvalue(),
+        )
+        self.assertIn(
+            "Error generating JSON for intrachunk_cohesion pair 2/10: "
+            "RuntimeError: temporary failure 2",
+            output.getvalue(),
+        )
+
+    def test_generate_json_stops_after_regeneration_attempts_are_exhausted(self):
+        completions = FlakyCompletions({}, failures=4)
+        client = SimpleNamespace(chat=SimpleNamespace(completions=completions))
+
+        with redirect_stdout(StringIO()):
+            with self.assertRaisesRegex(RuntimeError, "temporary failure 4"):
+                pipeline.generate_json(
+                    client,
+                    "system prompt",
+                    "user prompt",
+                    model="deepseek-v4-pro",
+                    regeneration_attempts=3,
+                    log_context="intrachunk_cohesion pair 2/10",
+                )
+
+        self.assertEqual(completions.attempts, 4)
 
     def test_save_json_writes_readable_utf8(self):
         payload = [
