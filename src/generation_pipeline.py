@@ -28,12 +28,14 @@ def generate_json(
         response_format={"type": "json_object"},
         extra_body={"thinking": {"type": "disabled"}},
     )
-    print(response)
+    # print(response)
     return json.loads(response.choices[0].message.content)
 
 
-def save_json(data: dict[str, Any], path: Path) -> Path:
-    """Save one JSON object in a human-readable UTF-8 file."""
+def save_json(
+    data: dict[str, Any] | list[dict[str, Any]], path: Path
+) -> Path:
+    """Save JSON objects in a human-readable UTF-8 file."""
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
         json.dumps(data, ensure_ascii=False, indent=2) + "\n",

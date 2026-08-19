@@ -52,7 +52,10 @@ class GenerationPipelineTests(unittest.TestCase):
         )
 
     def test_save_json_writes_readable_utf8(self):
-        payload = {"document_title": "Устав фонда «Маяк»"}
+        payload = [
+            {"document_title": "Устав фонда «Маяк»"},
+            {"document_title": "Положение ассоциации «Орион»"},
+        ]
 
         with TemporaryDirectory() as temporary_directory:
             path = Path(temporary_directory) / "nested" / "result.json"
@@ -61,7 +64,10 @@ class GenerationPipelineTests(unittest.TestCase):
             self.assertEqual(result, path)
             self.assertEqual(
                 path.read_text(encoding="utf-8"),
-                '{\n  "document_title": "Устав фонда «Маяк»"\n}\n',
+                "[\n"
+                '  {\n    "document_title": "Устав фонда «Маяк»"\n  },\n'
+                '  {\n    "document_title": "Положение ассоциации «Орион»"\n  }\n'
+                "]\n",
             )
 
 
