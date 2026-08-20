@@ -56,6 +56,35 @@ class JudgeResult(StrictBaseModel, Generic[ChecksT]):
 
     reason: str = Field(min_length=1)
 
+class GeneralChecks(StrictBaseModel):
+    positive_chunks_logically_complete: bool
+    positive_contextually_clear: bool
+
+    negative_has_multiple_controlled_errors: bool
+    negative_error_count_valid: bool
+
+    size_quality_degraded: bool
+    intrachunk_cohesion_degraded: bool
+    contextual_coherence_degraded: bool
+    boundary_clarity_degraded: bool
+    information_preservation_degraded: bool
+
+    at_least_two_target_properties_degraded: bool
+
+    changes_minimal: bool
+    no_uncontrolled_text_changes: bool
+    ocr_defect_valid: bool
+
+    focus_valid: bool
+    controlled_change_valid: bool
+    rationale_valid: bool
+    expected_relation_supported: bool
+
+
+class GeneralJudgeResult(
+    JudgeResult[GeneralChecks],
+):
+    pass
 
 # ---------------------------------------------------------------------
 # Size Compliance
