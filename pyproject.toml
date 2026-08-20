@@ -7,10 +7,12 @@ requires-python = ">=3.10"
 dependencies = [
     "chunking-metrics",
     "dotenv>=0.9.9",
+    "icecream>=2.2.0",
     "ipykernel>=7.3.0",
     "ipywidgets>=8.1.9",
     "matplotlib>=3.10.9",
     "pandas>=2.3.3",
+    "pydantic>=2.13.4",
     "seaborn>=0.13.2",
     "tqdm>=4.70.0",
 ]
