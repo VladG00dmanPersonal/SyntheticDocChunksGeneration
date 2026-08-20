@@ -56,6 +56,7 @@ class JudgeResult(StrictBaseModel, Generic[ChecksT]):
 
     reason: str = Field(min_length=1)
 
+
 class GeneralChecks(StrictBaseModel):
     positive_chunks_logically_complete: bool
     positive_contextually_clear: bool
@@ -85,6 +86,7 @@ class GeneralJudgeResult(
     JudgeResult[GeneralChecks],
 ):
     pass
+
 
 # ---------------------------------------------------------------------
 # Size Compliance
