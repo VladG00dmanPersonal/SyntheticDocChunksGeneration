@@ -36,8 +36,7 @@ Negative:
 5. Сдвинута именно одна целевая граница.
 6. Остальные границы не изменены без необходимости.
 7. source text полностью сохранён.
-8. focus.target_boundary_indices корректен.
-9. controlled_change точно описывает сдвиг.
+8. controlled_change точно описывает сдвиг.
 
 ХОРОШИЕ NEGATIVE ПРИМЕРЫ
 

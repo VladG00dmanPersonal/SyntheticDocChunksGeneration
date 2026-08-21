@@ -36,8 +36,7 @@ Negative:
 6. Изменение минимально.
 7. Нет потери/добавления текста.
 8. Не внесены лишние изменения ради Semantic Dispersion.
-9. focus.target_chunk_indices и target_boundary_indices корректны.
-10. controlled_change соответствует фактической операции.
+9. controlled_change соответствует фактической операции.
 
 ВАЖНО
 
@@ -56,7 +55,6 @@ valid=false, если:
 - изменено несколько границ;
 - текст потерян или перефразирован;
 - positive сама содержит явно разрезанную конструкцию;
-- focus неправильный.
 
 Верни только JSON по schema в system message.
 

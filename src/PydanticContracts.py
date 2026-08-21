@@ -1,6 +1,6 @@
-from typing import Any, Generic, Literal, TypeVar
+from typing import Generic, Literal, TypeVar
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class StrictBaseModel(BaseModel):
@@ -14,8 +14,30 @@ class StrictBaseModel(BaseModel):
 
 class ChunkingVariant(StrictBaseModel):
     chunks: list[str] = Field(min_length=1)
-    rationale: str = Field(min_length=1)
-    focus: dict[str, Any] = Field(default_factory=dict)
+
+
+class LengthRangeChars(StrictBaseModel):
+    min: int = Field(ge=1)
+    max: int = Field(ge=1)
+
+    @model_validator(mode="after")
+    def require_ordered_bounds(self):
+        if self.min > self.max:
+            raise ValueError("length range min must not exceed max")
+        return self
+
+
+class EvaluationContext(StrictBaseModel):
+    length_range_chars: LengthRangeChars | None = None
+    cue_question: str | None = Field(default=None, min_length=1)
+    fact: str | None = Field(default=None, min_length=1)
+
+    @model_validator(mode="after")
+    def require_exactly_one_context_kind(self):
+        values = (self.length_range_chars, self.cue_question, self.fact)
+        if sum(value is not None for value in values) != 1:
+            raise ValueError("evaluation_context must define exactly one context kind")
+        return self
 
 
 class SyntheticChunkingExample(StrictBaseModel):
@@ -26,8 +48,8 @@ class SyntheticChunkingExample(StrictBaseModel):
     negative: ChunkingVariant
 
     controlled_change: str = Field(min_length=1)
-
-    expected_relation: Literal["positive_higher_than_negative"]
+    contrast_rationale: str = Field(min_length=1)
+    evaluation_context: EvaluationContext | None = None
 
 
 # ---------------------------------------------------------------------
@@ -76,10 +98,8 @@ class GeneralChecks(StrictBaseModel):
     no_uncontrolled_text_changes: bool
     ocr_defect_valid: bool
 
-    focus_valid: bool
     controlled_change_valid: bool
-    rationale_valid: bool
-    expected_relation_supported: bool
+    contrast_rationale_valid: bool
 
 
 class GeneralJudgeResult(
@@ -98,7 +118,6 @@ class SizeComplianceChecks(StrictBaseModel):
     boundary_only_change: bool
     positive_size_compliant: bool
     negative_has_size_violation: bool
-    focus_valid: bool
     controlled_change_valid: bool
     metric_isolated: bool
 
@@ -118,7 +137,6 @@ class IntrachunkCohesionChecks(StrictBaseModel):
     positive_single_topic: bool
     negative_mixes_distinct_topics: bool
     change_minimal: bool
-    focus_valid: bool
     controlled_change_valid: bool
     metric_isolated: bool
 
@@ -141,7 +159,6 @@ class HopeSemanticIndependenceChecks(StrictBaseModel):
     positive_self_contained: bool
     negative_has_context_dependency: bool
     missing_context_exists_elsewhere: bool
-    focus_valid: bool
     controlled_change_valid: bool
     metric_isolated: bool
 
@@ -164,7 +181,6 @@ class HopeInformationPreservationChecks(StrictBaseModel):
     negative_loses_or_distorts_fact: bool
     exactly_one_fact_affected: bool
     fact_not_recoverable_elsewhere: bool
-    focus_valid: bool
     controlled_change_valid: bool
     change_minimal: bool
 
@@ -187,7 +203,6 @@ class HopeConceptUnityChecks(StrictBaseModel):
     negative_adds_independent_concept: bool
     added_content_is_not_merely_detail: bool
     change_minimal: bool
-    focus_valid: bool
     controlled_change_valid: bool
     metric_isolated: bool
 
@@ -211,7 +226,6 @@ class ContextualCoherenceChecks(StrictBaseModel):
     negative_crosses_context_boundary: bool
     foreign_fragment_belongs_to_neighbor_context: bool
     change_minimal: bool
-    focus_valid: bool
     controlled_change_valid: bool
     metric_isolated: bool
 
@@ -233,7 +247,6 @@ class BoundaryClarityChecks(StrictBaseModel):
     positive_boundary_semantically_complete: bool
     negative_boundary_splits_dependency: bool
     negative_dependency_stronger: bool
-    focus_valid: bool
     controlled_change_valid: bool
     metric_isolated: bool
 
@@ -257,7 +270,6 @@ class ChunkScoreChecks(StrictBaseModel):
     negative_chunk_less_complete: bool
     negative_boundary_less_clear: bool
     same_change_causes_both_effects: bool
-    focus_valid: bool
     controlled_change_valid: bool
     no_extra_violation: bool
 
