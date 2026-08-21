@@ -49,24 +49,7 @@ valid=false, если:
 - основное нарушение связано с потерей текста, размером или иной метрикой;
 - focus некорректен.
 
-Верни только JSON:
-
-{
-  "valid": true,
-  "quality_score": 1,
-  "issues": [],
-  "checks": {
-    "same_source_text": true,
-    "boundary_only_change": true,
-    "positive_single_topic": true,
-    "negative_mixes_distinct_topics": true,
-    "change_minimal": true,
-    "focus_valid": true,
-    "controlled_change_valid": true,
-    "metric_isolated": true
-  },
-  "reason": "Краткое итоговое объяснение"
-}
+Верни только JSON по schema в system message.
 
 quality_score использует шкалу 1–5, где 5 означает особенно чистую и однозначную контрастную пару.
 

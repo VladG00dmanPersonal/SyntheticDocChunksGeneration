@@ -58,25 +58,7 @@ valid=false, если:
 - изменение неоправданно большое;
 - focus неправильный.
 
-Верни только JSON:
-
-{
-  "valid": true,
-  "quality_score": 1,
-  "issues": [],
-  "checks": {
-    "same_source_text": true,
-    "boundary_only_change": true,
-    "positive_has_single_core_concept": true,
-    "negative_adds_independent_concept": true,
-    "added_content_is_not_merely_detail": true,
-    "change_minimal": true,
-    "focus_valid": true,
-    "controlled_change_valid": true,
-    "metric_isolated": true
-  },
-  "reason": "Краткое объяснение"
-}
+Верни только JSON по schema в system message.
 
 Используй quality_score 1–5.
 

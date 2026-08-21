@@ -58,26 +58,7 @@ valid=false, если:
 - positive сама содержит явно разрезанную конструкцию;
 - focus неправильный.
 
-Верни только JSON:
-
-{
-  "valid": true,
-  "quality_score": 1,
-  "issues": [],
-  "checks": {
-    "same_source_text": true,
-    "single_boundary_change": true,
-    "positive_chunk_complete": true,
-    "positive_boundary_clear": true,
-    "negative_chunk_less_complete": true,
-    "negative_boundary_less_clear": true,
-    "same_change_causes_both_effects": true,
-    "focus_valid": true,
-    "controlled_change_valid": true,
-    "no_extra_violation": true
-  },
-  "reason": "Краткое объяснение"
-}
+Верни только JSON по schema в system message.
 
 Используй quality_score 1–5.
 

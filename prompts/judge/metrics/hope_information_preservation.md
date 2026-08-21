@@ -54,25 +54,7 @@ valid=false, если:
 - negative вносит дополнительные смысловые изменения;
 - controlled_change не соответствует фактической модификации.
 
-Верни только JSON:
-
-{
-  "valid": true,
-  "quality_score": 1,
-  "issues": [],
-  "checks": {
-    "fact_exists_in_source": true,
-    "positive_preserves_fact": true,
-    "positive_preserves_source": true,
-    "negative_loses_or_distorts_fact": true,
-    "exactly_one_fact_affected": true,
-    "fact_not_recoverable_elsewhere": true,
-    "focus_valid": true,
-    "controlled_change_valid": true,
-    "change_minimal": true
-  },
-  "reason": "Краткое итоговое объяснение"
-}
+Верни только JSON по schema в system message.
 
 Используй quality_score 1–5.
 

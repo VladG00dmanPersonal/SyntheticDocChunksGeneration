@@ -59,24 +59,7 @@ HARD FAIL
 
 valid=false, если нарушено хотя бы одно ключевое ограничение выше.
 
-Верни только JSON:
-
-{
-  "valid": true,
-  "quality_score": 1,
-  "issues": [],
-  "checks": {
-    "same_source_text": true,
-    "only_target_boundary_changed": true,
-    "positive_boundary_semantically_complete": true,
-    "negative_boundary_splits_dependency": true,
-    "negative_dependency_stronger": true,
-    "focus_valid": true,
-    "controlled_change_valid": true,
-    "metric_isolated": true
-  },
-  "reason": "Краткое объяснение"
-}
+Верни только JSON по schema в system message.
 
 Используй quality_score 1–5.
 

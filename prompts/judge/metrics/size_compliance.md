@@ -48,28 +48,6 @@ QUALITY SCORE
 2 — формально близка к требованиям, но содержит существенные confounders.
 1 — непригодна как тест метрики.
 
-Верни только JSON:
-
-{
-  "valid": true,
-  "quality_score": 1,
-  "issues": [
-    {
-      "severity": "fatal|major|minor",
-      "code": "short_machine_readable_code",
-      "message": "Краткое объяснение"
-    }
-  ],
-  "checks": {
-    "same_source_text": true,
-    "boundary_only_change": true,
-    "positive_size_compliant": true,
-    "negative_has_size_violation": true,
-    "focus_valid": true,
-    "controlled_change_valid": true,
-    "metric_isolated": true
-  },
-  "reason": "Краткое итоговое объяснение решения"
-}
+Верни только JSON по schema в system message.
 
 Не добавляй Markdown и текст вне JSON.

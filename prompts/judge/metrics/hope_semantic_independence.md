@@ -56,25 +56,7 @@ valid=false, если:
 - focus indices неправильные;
 - произошло перефразирование или искажение текста.
 
-Верни только JSON:
-
-{
-  "valid": true,
-  "quality_score": 1,
-  "issues": [],
-  "checks": {
-    "same_source_text": true,
-    "boundary_only_change": true,
-    "cue_question_valid": true,
-    "positive_self_contained": true,
-    "negative_has_context_dependency": true,
-    "missing_context_exists_elsewhere": true,
-    "focus_valid": true,
-    "controlled_change_valid": true,
-    "metric_isolated": true
-  },
-  "reason": "Краткое объяснение"
-}
+Верни только JSON по schema в system message.
 
 Используй quality_score 1–5.
 

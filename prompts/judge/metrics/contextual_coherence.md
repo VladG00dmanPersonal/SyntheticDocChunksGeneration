@@ -45,26 +45,7 @@ valid=false, если:
 - нарушение создано не переносом границы;
 - основным эффектом является другая метрика.
 
-Верни только JSON:
-
-{
-  "valid": true,
-  "quality_score": 1,
-  "issues": [],
-  "checks": {
-    "same_source_text": true,
-    "boundary_only_change": true,
-    "local_structure_exists": true,
-    "positive_matches_local_context": true,
-    "negative_crosses_context_boundary": true,
-    "foreign_fragment_belongs_to_neighbor_context": true,
-    "change_minimal": true,
-    "focus_valid": true,
-    "controlled_change_valid": true,
-    "metric_isolated": true
-  },
-  "reason": "Краткое объяснение"
-}
+Верни только JSON по schema в system message.
 
 Используй quality_score 1–5.
 

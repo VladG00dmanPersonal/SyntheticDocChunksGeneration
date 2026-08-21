@@ -6,24 +6,8 @@
 условия, исключения, определения и перекрёстные ссылки. Маркер `||` соединяет логически
 связанные части внутри одного чанка.
 
-Верни только один валидный JSON-объект без Markdown и комментариев:
-
-{
-  "document_title": "...",
-  "source_document": "...",
-  "positive": {
-    "chunks": ["..."],
-    "rationale": "...",
-    "focus": {}
-  },
-  "negative": {
-    "chunks": ["..."],
-    "rationale": "...",
-    "focus": {}
-  },
-  "controlled_change": "...",
-  "expected_relation": "positive_higher_than_negative"
-}
+Верни только один валидный JSON-объект по schema в конце system message, без Markdown и
+комментариев.
 
 Правила:
 - создай ровно одну пару positive/negative;

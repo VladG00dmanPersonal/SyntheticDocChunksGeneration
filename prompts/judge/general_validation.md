@@ -31,14 +31,6 @@
 
 Для каждого свойства отдельно определи, действительно ли оно ухудшилось.
 
-`affected_property_count` должен равняться числу `true` среди:
-
-* `size_quality_degraded`;
-* `intrachunk_cohesion_degraded`;
-* `contextual_coherence_degraded`;
-* `boundary_clarity_degraded`;
-* `information_preservation_degraded`.
-
 ## Hard fail
 
 `valid=false`, если:
