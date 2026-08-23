@@ -115,7 +115,7 @@ class TokenUsageTests(unittest.TestCase):
         self.assertFalse(record["usage_available"])
         self.assertIsNone(record["usage"])
 
-    def test_summary_separates_roles_and_model_configurations(self):
+    def test_summary_separates_judge_usage_by_generator_run(self):
         module = load_token_usage_module()
 
         with tempfile.TemporaryDirectory() as tmp:
@@ -126,7 +126,7 @@ class TokenUsageTests(unittest.TestCase):
                 role="generator",
                 run_id="run-1",
                 usage=FakeUsage(100, 20, 10, 5),
-                model="generator-model",
+                model="generator-model-a",
             )
             append_record(
                 module,
@@ -134,7 +134,7 @@ class TokenUsageTests(unittest.TestCase):
                 role="generator",
                 run_id="run-2",
                 usage=FakeUsage(50, 10, 5, 2),
-                model="generator-model",
+                model="generator-model-b",
             )
             append_record(
                 module,
@@ -152,27 +152,40 @@ class TokenUsageTests(unittest.TestCase):
                 usage=None,
                 model="judge-model",
             )
+            append_record(
+                module,
+                path,
+                role="judge",
+                run_id="run-2",
+                usage=FakeUsage(40, 8, 4, 6),
+                model="judge-model",
+            )
 
             usage_df = module.load_token_usage(path)
-            summary = module.summarize_token_usage(usage_df).set_index("role")
+            summary = module.summarize_token_usage(usage_df).set_index(
+                ["run_id", "role"]
+            )
 
-        generator = summary.loc["generator"]
-        self.assertEqual(generator["runs"], 2)
-        self.assertEqual(generator["requests"], 2)
-        self.assertEqual(generator["responses_with_usage"], 2)
-        self.assertEqual(generator["prompt_tokens"], 150)
-        self.assertEqual(generator["completion_tokens"], 30)
-        self.assertEqual(generator["total_tokens"], 180)
-        self.assertEqual(generator["cached_tokens"], 15)
-        self.assertEqual(generator["reasoning_tokens"], 7)
+        run_1_generator = summary.loc[("run-1", "generator")]
+        self.assertEqual(run_1_generator["generator_model"], "generator-model-a")
+        self.assertEqual(run_1_generator["requests"], 1)
+        self.assertEqual(run_1_generator["total_tokens"], 120)
 
-        judge = summary.loc["judge"]
-        self.assertEqual(judge["runs"], 1)
-        self.assertEqual(judge["requests"], 2)
-        self.assertEqual(judge["responses_with_usage"], 1)
-        self.assertEqual(judge["total_tokens"], 36)
-        self.assertEqual(judge["cached_tokens"], 3)
-        self.assertEqual(judge["reasoning_tokens"], 4)
+        run_1_judge = summary.loc[("run-1", "judge")]
+        self.assertEqual(run_1_judge["generator_model"], "generator-model-a")
+        self.assertEqual(run_1_judge["requests"], 2)
+        self.assertEqual(run_1_judge["responses_with_usage"], 1)
+        self.assertEqual(run_1_judge["total_tokens"], 36)
+
+        run_2_generator = summary.loc[("run-2", "generator")]
+        self.assertEqual(run_2_generator["generator_model"], "generator-model-b")
+        self.assertEqual(run_2_generator["requests"], 1)
+        self.assertEqual(run_2_generator["total_tokens"], 60)
+
+        run_2_judge = summary.loc[("run-2", "judge")]
+        self.assertEqual(run_2_judge["generator_model"], "generator-model-b")
+        self.assertEqual(run_2_judge["requests"], 1)
+        self.assertEqual(run_2_judge["total_tokens"], 48)
 
 
 if __name__ == "__main__":

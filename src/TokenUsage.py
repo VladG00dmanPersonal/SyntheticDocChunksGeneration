@@ -89,8 +89,10 @@ def _usage_value(usage: Any, *paths: tuple[str, ...]) -> int | None:
 
 
 def summarize_token_usage(usage_df: pd.DataFrame) -> pd.DataFrame:
-    """Summarize requests and returned tokens by role and configuration."""
+    """Summarize each run by role and configuration."""
     group_columns = [
+        "run_id",
+        "generator_model",
         "role",
         "model",
         "endpoint",
@@ -114,6 +116,12 @@ def summarize_token_usage(usage_df: pd.DataFrame) -> pd.DataFrame:
         return pd.DataFrame(columns=summary_columns)
 
     data = usage_df.copy()
+    generator_models = (
+        data.loc[data["role"].eq("generator"), ["run_id", "model"]]
+        .drop_duplicates("run_id")
+        .set_index("run_id")["model"]
+    )
+    data["generator_model"] = data["run_id"].map(generator_models)
     token_paths = {
         "prompt_tokens": (("prompt_tokens",),),
         "completion_tokens": (("completion_tokens",),),
