@@ -188,10 +188,12 @@ name = "chunking-metrics"
 version = "0.1.0"
 source = { editable = "../DocumentChunkingMetricsFramework" }
 dependencies = [
+    { name = "huggingface-hub" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
     { name = "numpy", version = "2.4.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version == '3.11.*'" },
     { name = "numpy", version = "2.5.2", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "openai" },
+    { name = "pydantic" },
     { name = "sentence-transformers" },
     { name = "torch" },
     { name = "transformers" },
@@ -199,8 +201,10 @@ dependencies = [
 
 [package.metadata]
 requires-dist = [
+    { name = "huggingface-hub", specifier = ">=1.27.0" },
     { name = "numpy", specifier = ">=2.2.6" },
     { name = "openai", specifier = ">=2.53.0" },
+    { name = "pydantic", specifier = ">=2.13,<3" },
     { name = "sentence-transformers", specifier = ">=5.6,<6" },
     { name = "torch", specifier = ">=2.4" },
     { name = "transformers", specifier = ">=5,<6" },
